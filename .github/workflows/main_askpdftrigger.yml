@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: 'Resolve Project Dependencies Using Npm'
-        shell: bash
+        shell: pwsh
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           npm install
@@ -34,17 +34,14 @@ jobs:
           npm run test --if-present
           popd
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: release.zip
+          path: .
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
@@ -57,16 +54,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
       
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_956385515F4F4B1FBCEA87E4B64B889C }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_211F993AAC7D47A8A3A9DD11F1E3ED24 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_9D1C74F23F7D4B33A1B3D18E2845721F }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E10C1B1A2E8E4965AB104158F729D39F }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_95DD27404E2C4CC8AA31528113B5382F }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BD953D639F7B4F868EDCD872069A9E31 }}
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
