@@ -9,7 +9,7 @@ export async function AskPDFTrigger(
   context.log("Timer function processed request.");
   console.log("calling scrape!!!!!!!!!!!");
   try {
-    await installBrowser();
+    // await installBrowser();
     await scrape(context);
   } catch (error) {
     context.log("Error during scraping: ", error);
@@ -24,7 +24,8 @@ async function scrape(context: InvocationContext) {
   const browser = await puppeteer.launch({
     headless: true,
     // executablePath:
-    //   "./node_modules/puppeteer/.local-chromium/win64-1036745/chrome-win/chrome.exe",
+    executablePath:
+      "C:/home/site/wwwroot/node_modules/puppeteer/.local-chromium/win64-1036745/chrome-win/chrome.exe",
 
     args: ["--no-sandbox", "--disable-setuid-sandbox"], // These flags are often necessary for Azure
   });
